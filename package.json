@@ -13,9 +13,6 @@
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:bombadil": "pnpm exec vite preview --port 4173 --host & npx wait-on http://localhost:4173 && bombadil test http://localhost:4173 --no-sandbox --exit-on-violation --time-limit 2m --output-path ./bombadil-results",
-    "gh-workflow": "AI_AGENT=1 npx @redwoodjs/agent-ci run --workflow .github/workflows/fuzzy-test.yml --var BOMBADIL_TIME_LIMIT=2m",
-    "gh-workflow:fast": "AI_AGENT=1 npx @redwoodjs/agent-ci run --workflow .github/workflows/fuzzy-test.yml --var BOMBADIL_TIME_LIMIT=30s",
-    "gh-workflow:pause": "AI_AGENT=1 npx @redwoodjs/agent-ci run --workflow .github/workflows/fuzzy-test.yml --var BOMBADIL_TIME_LIMIT=2m --pause-on-failure",
     "ci:local": "npx @redwoodjs/agent-ci run --all --var BOMBADIL_TIME_LIMIT=2m"
   },
   "dependencies": {
