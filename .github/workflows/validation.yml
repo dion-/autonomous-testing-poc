@@ -149,88 +149,7 @@ jobs:
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
-          npx flue run analyze-violation --target node --id ci-bombadil-$GITHUB_RUN_ID > flue-output.txt 2>&1
-          echo "--- Flue full output ---"
-          cat flue-output.txt
-          echo "--- End Flue output ---"
-          awk '/^\[flue\] Done\./{p=1; next} p' flue-output.txt > flue-result.json
-          echo "--- Extracted JSON ---"
-          cat flue-result.json
-          echo "--- End JSON ---"
-          if [ -s flue-result.json ]; then
-            echo "has_result=true" >> $GITHUB_OUTPUT
-          else
-            echo "has_result=false" >> $GITHUB_OUTPUT
-          fi
-        shell: bash
-
-      - name: Build PR Comment
-        if: failure()
-        id: comment
-        run: |
-          if [ "${{ steps.flue.outputs.has_result }}" = "true" ] && [ -f flue-result.json ]; then
-            FILE=$(jq -r '.diagnosis.file' flue-result.json)
-            LINE=$(jq -r '.diagnosis.line' flue-result.json)
-            FUNC=$(jq -r '.diagnosis.primaryFunc' flue-result.json)
-            ERROR_TYPE=$(jq -r '.diagnosis.errorType' flue-result.json)
-            ERROR_MSG=$(jq -r '.diagnosis.errorMessage' flue-result.json)
-            EXPLANATION=$(jq -r '.fix.explanation' flue-result.json)
-            OLD_CODE=$(jq -r '.fix.oldString' flue-result.json)
-            NEW_CODE=$(jq -r '.fix.newString' flue-result.json)
-
-            # Format diff with proper +/- line prefixes
-            DIFF_OLD=$(printf '%s' "$OLD_CODE" | sed 's/^/- /')
-            DIFF_NEW=$(printf '%s' "$NEW_CODE" | sed 's/^/+ /')
-
-            cat > comment.md << EOF
-          ## 🐛 Bombadil Fuzzy Test Failure
-
-          Bombadil detected property violations during fuzzy testing.
-
-          ### Diagnosis
-
-          | | |
-          |---|---|
-          | **File** | \`$FILE\` |
-          | **Line** | \`$LINE\` |
-          | **Function** | \`$FUNC\` |
-
-          **Error:** $ERROR_TYPE: \`$ERROR_MSG\`
-
-          ### Proposed Fix
-
-          \`\`\`diff
-          $DIFF_OLD
-          $DIFF_NEW
-          \`\`\`
-
-          **Explanation:** $EXPLANATION
-
-          ### Action Sequence
-
-          See the uploaded artifact \`bombadil-results\` for the full trace, screenshots, and state transitions.
-
-          You can inspect locally with:
-          \`\`\`bash
-          npx bombadil inspect bombadil-results
-          \`\`\`
-          EOF
-          else
-            cat > comment.md << EOF
-          ## 🐛 Bombadil Fuzzy Test Failure
-
-          Bombadil detected property violations during fuzzy testing.
-
-          ### Violations
-
-          See the uploaded artifact \`bombadil-results\` for the full trace, screenshots, and state transitions.
-
-          You can inspect locally with:
-          \`\`\`bash
-          npx bombadil inspect bombadil-results
-          \`\`\`
-          EOF
-          fi
+          npx flue run analyze-violation --target node --id ci-bombadil-$GITHUB_RUN_ID
         shell: bash
 
       - name: Post PR Comment
@@ -238,5 +157,24 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh pr comment ${{ github.event.pull_request.number }} --body-file comment.md
+          if [ -f flue-comment.md ]; then
+            echo "Posting Flue-generated comment..."
+            gh pr comment ${{ github.event.pull_request.number }} --body-file flue-comment.md
+          else
+            echo "Posting default fallback comment..."
+            gh pr comment ${{ github.event.pull_request.number }} --body-file - << 'EOF'
+          ## 🐛 Bombadil Fuzzy Test Failure
+
+          Bombadil detected property violations during fuzzy testing.
+
+          ### Violations
+
+          See the uploaded artifact `bombadil-results` for the full trace, screenshots, and state transitions.
+
+          You can inspect locally with:
+          ```bash
+          npx bombadil inspect bombadil-results
+          ```
+          EOF
+          fi
         shell: bash
