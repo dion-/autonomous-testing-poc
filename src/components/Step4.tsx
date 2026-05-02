@@ -1,10 +1,10 @@
-import type { FormData } from '../hooks/useFormState'
-import { calculateDiscount } from '../utils/validators'
+import type { FormData } from "../hooks/useFormState";
+import { calculateDiscount } from "../utils/validators";
 
 interface Step4Props {
-  data: FormData
-  onSubmit: () => void
-  onEdit: (step: number) => void
+  data: FormData;
+  onSubmit: () => void;
+  onEdit: (step: number) => void;
 }
 
 function ReviewSection({
@@ -12,9 +12,9 @@ function ReviewSection({
   children,
   onEdit,
 }: {
-  title: string
-  children: React.ReactNode
-  onEdit: () => void
+  title: string;
+  children: React.ReactNode;
+  onEdit: () => void;
 }) {
   return (
     <div className="flex items-start justify-between gap-4 py-4 border-b border-gray-100 last:border-0">
@@ -30,14 +30,14 @@ function ReviewSection({
         Edit
       </button>
     </div>
-  )
+  );
 }
 
 export function Step4({ data, onSubmit, onEdit }: Step4Props) {
-  const discount = calculateDiscount(data.preferences.promoCode)
-  const subtotal = 99.99
-  const discountAmount = subtotal * discount
-  const total = subtotal - discountAmount + (data.preferences.giftWrap ? 5.0 : 0)
+  const discount = calculateDiscount(data.preferences.promoCode);
+  const subtotal = 99.99;
+  const discountAmount = subtotal * discount;
+  const total = subtotal - discountAmount + (data.preferences.giftWrap ? 5.0 : 0);
 
   return (
     <fieldset>
@@ -61,14 +61,12 @@ export function Step4({ data, onSubmit, onEdit }: Step4Props) {
         </ReviewSection>
 
         <ReviewSection title="Preferences" onEdit={() => onEdit(2)}>
-          <p>Newsletter: {data.preferences.newsletter ? 'Yes' : 'No'}</p>
-          <p>Gift wrap: {data.preferences.giftWrap ? 'Yes' : 'No'}</p>
+          <p>Newsletter: {data.preferences.newsletter ? "Yes" : "No"}</p>
+          <p>Gift wrap: {data.preferences.giftWrap ? "Yes" : "No"}</p>
           {data.preferences.deliveryInstructions && (
             <p>Instructions: {data.preferences.deliveryInstructions}</p>
           )}
-          {data.preferences.promoCode && (
-            <p>Promo: {data.preferences.promoCode}</p>
-          )}
+          {data.preferences.promoCode && <p>Promo: {data.preferences.promoCode}</p>}
         </ReviewSection>
 
         <div className="py-4">
@@ -106,5 +104,5 @@ export function Step4({ data, onSubmit, onEdit }: Step4Props) {
         Place Order
       </button>
     </fieldset>
-  )
+  );
 }

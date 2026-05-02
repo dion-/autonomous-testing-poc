@@ -1,16 +1,16 @@
-import '@testing-library/jest-dom'
-import { beforeEach, vi } from 'vitest'
+import "@testing-library/jest-dom";
+import { beforeEach, vi } from "vitest";
 
 beforeEach(() => {
   try {
-    localStorage.clear()
+    localStorage.clear();
   } catch {
     // Some jsdom environments have broken localStorage implementations
   }
-})
+});
 
 // Mock matchMedia if needed by any components
-Object.defineProperty(window, 'matchMedia', {
+Object.defineProperty(window, "matchMedia", {
   writable: true,
   value: vi.fn().mockImplementation((query: string) => ({
     matches: false,
@@ -22,4 +22,4 @@ Object.defineProperty(window, 'matchMedia', {
     removeEventListener: vi.fn(),
     dispatchEvent: vi.fn(),
   })),
-})
+});
