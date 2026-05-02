@@ -55,7 +55,7 @@ describe('useFormState', () => {
       result.current.updatePersonal('firstName', 'Jane')
     })
     expect(result.current.formData.personal.firstName).toBe('Jane')
-    const stored = JSON.parse(store[STORAGE_KEY])
+    const stored = JSON.parse(store[STORAGE_KEY]!)
     expect(stored.personal.firstName).toBe('Jane')
   })
 
@@ -65,7 +65,7 @@ describe('useFormState', () => {
       result.current.updateShipping('country', 'CA')
     })
     expect(result.current.formData.shipping.country).toBe('CA')
-    const stored = JSON.parse(store[STORAGE_KEY])
+    const stored = JSON.parse(store[STORAGE_KEY]!)
     expect(stored.shipping.country).toBe('CA')
   })
 
@@ -75,7 +75,7 @@ describe('useFormState', () => {
       result.current.updatePreferences('newsletter', true)
     })
     expect(result.current.formData.preferences.newsletter).toBe(true)
-    const stored = JSON.parse(store[STORAGE_KEY])
+    const stored = JSON.parse(store[STORAGE_KEY]!)
     expect(stored.preferences.newsletter).toBe(true)
   })
 
@@ -85,7 +85,7 @@ describe('useFormState', () => {
       result.current.updatePreferences('promoCode', 'SAVE20')
     })
     expect(result.current.formData.preferences.promoCode).toBe('SAVE20')
-    const stored = JSON.parse(store[STORAGE_KEY])
+    const stored = JSON.parse(store[STORAGE_KEY]!)
     expect(stored.preferences.promoCode).toBe('SAVE20')
   })
 

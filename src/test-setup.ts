@@ -1,5 +1,13 @@
 import '@testing-library/jest-dom'
-import { vi } from 'vitest'
+import { beforeEach, vi } from 'vitest'
+
+beforeEach(() => {
+  try {
+    localStorage.clear()
+  } catch {
+    // Some jsdom environments have broken localStorage implementations
+  }
+})
 
 // Mock matchMedia if needed by any components
 Object.defineProperty(window, 'matchMedia', {

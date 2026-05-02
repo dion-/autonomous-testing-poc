@@ -62,7 +62,7 @@ describe('App', () => {
 
     const navButtons = screen.getAllByRole('button')
     // Click the first nav button (Personal) to go back to step 0
-    await userEvent.click(navButtons[0])
+    await userEvent.click(navButtons[0]!)
     expect(screen.getByLabelText('First Name')).toBeInTheDocument()
   })
 
@@ -99,7 +99,7 @@ describe('App', () => {
     await userEvent.click(screen.getByRole('button', { name: /next/i }))
 
     // Click the first Place Order button (there are two on the review step)
-    await userEvent.click(screen.getAllByRole('button', { name: /place order/i })[0])
+    await userEvent.click(screen.getAllByRole('button', { name: /place order/i })[0]!)
     expect(screen.getByText('Order Placed')).toBeInTheDocument()
 
     await userEvent.click(screen.getByRole('button', { name: /start new order/i }))
@@ -123,7 +123,7 @@ describe('App', () => {
     await userEvent.click(screen.getByRole('button', { name: /next/i }))
 
     const editButtons = screen.getAllByRole('button', { name: /edit/i })
-    await userEvent.click(editButtons[1])
+    await userEvent.click(editButtons[1]!)
     expect(screen.getByLabelText('Country')).toBeInTheDocument()
   })
 

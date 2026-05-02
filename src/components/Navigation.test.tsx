@@ -47,8 +47,8 @@ describe('Navigation', () => {
       />,
     )
     const buttons = screen.getAllByRole('button')
-    expect(buttons[0].querySelector('svg')).toBeInTheDocument()
-    expect(buttons[1].querySelector('svg')).toBeInTheDocument()
+    expect(buttons[0]!.querySelector('svg')).toBeInTheDocument()
+    expect(buttons[1]!.querySelector('svg')).toBeInTheDocument()
   })
 
   it('calls onSkipTo when clicking a step', async () => {
@@ -64,7 +64,7 @@ describe('Navigation', () => {
       />,
     )
     const buttons = screen.getAllByRole('button')
-    await userEvent.click(buttons[2])
+    await userEvent.click(buttons[2]!)
     expect(onSkipTo).toHaveBeenCalledWith(2)
   })
 })
