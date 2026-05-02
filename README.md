@@ -58,6 +58,7 @@ The demo app is a 4-step checkout form designed to maximize Bombadil's state spa
 4. **Review** — editable summary with dynamic pricing
 
 **Interaction paths:**
+
 - Next/Back navigation
 - Skip to any step via progress indicator
 - Terms & Conditions modal (accessible from any step)
@@ -90,18 +91,9 @@ Upload artifact
 
 ### Configuration
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `BOMBADIL_TIME_LIMIT` | `2m` | Fuzzy test duration. Set via repository variables in GitHub Settings. |
-
-## Phase 2 Roadmap
-
-When ready, enable autonomous fixing:
-
-1. Add `opencode-fix` job triggered on Bombadil failure
-2. Parse trace and feed to `anomalyco/opencode/github@latest` with custom prompt
-3. OpenCode creates branch `auto-fix/bombadil-{pr}-{timestamp}`
-4. Max 1 attempt, skip existing `auto-fix/*` branches
+| Variable              | Default | Description                                                           |
+| --------------------- | ------- | --------------------------------------------------------------------- |
+| `BOMBADIL_TIME_LIMIT` | `2m`    | Fuzzy test duration. Set via repository variables in GitHub Settings. |
 
 ## Project Structure
 
