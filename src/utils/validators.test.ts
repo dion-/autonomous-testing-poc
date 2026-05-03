@@ -111,4 +111,9 @@ describe("formatPhone", () => {
   it("returns empty string for empty input", () => {
     expect(formatPhone("")).toBe("");
   });
+
+  it("returns empty string for non-10-digit input", () => {
+    expect(formatPhone("123")).toBe("");
+    expect(formatPhone("12345678901")).toBe("");
+  });
 });
