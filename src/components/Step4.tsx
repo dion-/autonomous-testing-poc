@@ -1,5 +1,5 @@
 import type { FormData } from "../hooks/useFormState";
-import { calculateDiscount, formatPhone } from "../utils/validators";
+import { calculateDiscount, formatPhone, getTaxRate } from "../utils/validators";
 
 interface Step4Props {
   data: FormData;
@@ -37,6 +37,8 @@ export function Step4({ data, onSubmit, onEdit }: Step4Props) {
   const discount = calculateDiscount(data.preferences.promoCode);
   const subtotal = 99.99;
   const discountAmount = subtotal * discount;
+  const taxRate = getTaxRate(data.shipping.state);
+  const taxAmount = subtotal * taxRate;
   const total = subtotal - discountAmount + (data.preferences.giftWrap ? 5.0 : 0);
 
   return (
@@ -91,6 +93,10 @@ export function Step4({ data, onSubmit, onEdit }: Step4Props) {
             <div className="flex justify-between text-gray-900 font-semibold pt-2 border-t border-gray-100">
               <span>Total</span>
               <span>${total.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between text-gray-400 text-xs mt-1">
+              <span>Estimated tax</span>
+              <span>${taxAmount.toFixed(2)}</span>
             </div>
           </div>
         </div>

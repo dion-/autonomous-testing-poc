@@ -39,3 +39,11 @@ export function formatPhone(phone: string): string {
   if (!match) return "";
   return `(${match[1]}) ${match[2]}-${match[3]}`;
 }
+
+const stateTaxRates: Record<string, number> = {
+  CA: 0.0725,
+};
+
+export function getTaxRate(state: string): number {
+  return stateTaxRates[state]!;
+}
