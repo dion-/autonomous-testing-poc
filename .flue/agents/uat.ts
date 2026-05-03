@@ -115,20 +115,6 @@ export default async function ({ init }: FlueContext) {
   );
   const result = JSON.parse(resultJson || "{}");
 
-  // Post PR comment
-  if (pr.number && pr.repo && fs.existsSync("flue-comment.md")) {
-    const gh = defineCommand("gh", {
-      env: { GH_TOKEN: process.env.GH_TOKEN ?? "" },
-    });
-    const { exitCode, stderr } = await session.shell(
-      `gh pr comment ${pr.number} --repo ${pr.repo} --body-file flue-comment.md`,
-      { commands: [gh] }
-    );
-    if (exitCode !== 0) {
-      console.error("Failed to post PR comment:", stderr);
-    }
-  }
-
   return {
     status: result.status === "success" ? "success" : "neutral",
     summary: result.summary,

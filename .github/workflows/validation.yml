@@ -203,6 +203,94 @@ jobs:
           npx flue run uat --target node --id ci-uat-$GITHUB_RUN_ID
         shell: bash
 
+      - name: Post UAT comment with embedded media
+        if: always() && github.event.pull_request.number
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          node -e '
+          const fs = require("fs");
+          const path = require("path");
+          const { execSync } = require("child_process");
+
+          const commentFile = "flue-comment.md";
+          if (!fs.existsSync(commentFile)) {
+            console.log("No flue-comment.md found; skipping comment.");
+            process.exit(0);
+          }
+
+          let comment = fs.readFileSync(commentFile, "utf8");
+
+          function collectFiles(dir, ext) {
+            const results = [];
+            for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+              const full = path.join(dir, entry.name);
+              if (entry.isDirectory()) {
+                results.push(...collectFiles(full, ext));
+              } else if (entry.name.endsWith(ext)) {
+                results.push(full);
+              }
+            }
+            return results;
+          }
+
+          const screenshots = fs.existsSync("test-results") ? collectFiles("test-results", ".png").sort() : [];
+          const videos = fs.existsSync("test-results") ? collectFiles("test-results", ".webm").sort() : [];
+
+          async function uploadFile(filePath) {
+            const repo = process.env.REPO;
+            const token = process.env.GH_TOKEN;
+            const response = execSync(
+              `curl -s -X POST -H "Accept: application/json" -H "Authorization: token ${token}" -F "file=@${filePath}" "https://uploads.github.com/repos/${repo}/issues/files"`,
+              { encoding: "utf8", maxBuffer: 10 * 1024 * 1024 }
+            );
+            try {
+              const json = JSON.parse(response);
+              return json.href || null;
+            } catch {
+              console.error("Upload failed for", filePath, response);
+              return null;
+            }
+          }
+
+          async function main() {
+            if (screenshots.length > 0) {
+              comment += "\n\n### Screenshots\n";
+              for (const img of screenshots) {
+                const url = await uploadFile(img);
+                if (url) {
+                  comment += `\n![${path.basename(img)}](${url})`;
+                }
+              }
+            }
+
+            if (videos.length > 0) {
+              comment += "\n\n### Videos\n";
+              for (const vid of videos) {
+                const url = await uploadFile(vid);
+                if (url) {
+                  comment += `\n\n<video src="${url}" controls width="100%"></video>`;
+                }
+              }
+            }
+
+            const finalFile = "flue-comment-final.md";
+            fs.writeFileSync(finalFile, comment);
+            execSync(
+              `gh pr comment ${process.env.PR_NUMBER} --repo ${process.env.REPO} --body-file ${finalFile}`,
+              { stdio: "inherit", env: { ...process.env, GH_TOKEN: process.env.GH_TOKEN } }
+            );
+          }
+
+          main().catch(err => {
+            console.error(err);
+            process.exit(1);
+          });
+          '
+        shell: bash
+
       - name: Upload UAT artifacts
         uses: actions/upload-artifact@v4
         with:
