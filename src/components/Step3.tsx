@@ -63,6 +63,7 @@ export function Step3({ data, onChange }: Step3Props) {
           className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-900 placeholder-gray-400 outline-none transition-colors focus:border-gray-400 focus:ring-2 focus:ring-gray-100 resize-y"
         />
         <p
+          aria-live="polite"
           className={`text-xs ${data.deliveryInstructions.length >= 200 ? "text-red-500" : "text-gray-500"}`}
         >
           {data.deliveryInstructions.length} / 200 characters
