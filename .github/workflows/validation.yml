@@ -88,6 +88,8 @@ jobs:
   bombadil:
     name: Bombadil Fuzzy Test
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -140,28 +142,39 @@ jobs:
           name: bombadil-results
           path: bombadil-results/
 
-      - name: Parse Bombadil trace
+      - name: Run Flue Agent to Diagnose
         if: failure()
-        id: parse
+        id: flue
+        continue-on-error: true
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
-          echo '## Bombadil Fuzzy Test Failure' > bombadil-comment.md
-          echo '' >> bombadil-comment.md
-          echo 'Bombadil detected property violations during fuzzy testing.' >> bombadil-comment.md
-          echo '' >> bombadil-comment.md
-          echo '### Violations' >> bombadil-comment.md
-          echo '' >> bombadil-comment.md
-          if [ -f bombadil-results/trace.jsonl ]; then
-            jq -r 'select(.violation != null) | "- **\(.property)**: \(.violation.message // "Property violated")"' bombadil-results/trace.jsonl | head -20 >> bombadil-comment.md
+          npx flue run analyze-violation --target node --id ci-bombadil-$GITHUB_RUN_ID
+        shell: bash
+
+      - name: Post PR Comment
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ -f flue-comment.md ]; then
+            echo "Posting Flue-generated comment..."
+            gh pr comment ${{ github.event.pull_request.number }} --body-file flue-comment.md
           else
-            echo '- Unable to parse trace. See uploaded artifact for details.' >> bombadil-comment.md
+            echo "Posting default fallback comment..."
+            gh pr comment ${{ github.event.pull_request.number }} --body-file - << 'EOF'
+          ## 🐛 Bombadil Fuzzy Test Failure
+
+          Bombadil detected property violations during fuzzy testing.
+
+          ### Violations
+
+          See the uploaded artifact `bombadil-results` for the full trace, screenshots, and state transitions.
+
+          You can inspect locally with:
+          ```bash
+          npx bombadil inspect bombadil-results
+          ```
+          EOF
           fi
-          echo '' >> bombadil-comment.md
-          echo '### Action Sequence' >> bombadil-comment.md
-          echo '' >> bombadil-comment.md
-          echo 'See the uploaded artifact `bombadil-results` for the full trace, screenshots, and state transitions.' >> bombadil-comment.md
-          echo '' >> bombadil-comment.md
-          echo 'You can inspect locally with:' >> bombadil-comment.md
-          echo '```bash' >> bombadil-comment.md
-          echo 'npx bombadil inspect bombadil-results' >> bombadil-comment.md
-          echo '```' >> bombadil-comment.md
         shell: bash
