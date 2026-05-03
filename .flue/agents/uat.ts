@@ -4,6 +4,7 @@ import type { FlueContext } from "@flue/sdk/client";
 import { defineCommand } from "@flue/sdk/node";
 import * as fs from "fs";
 import * as path from "path";
+import { fileURLToPath } from "url";
 
 export const triggers = {};
 
@@ -19,7 +20,8 @@ interface PrContext {
  * Locate the repository root by walking up from the agent file.
  */
 function findRepoRoot(): string {
-  let dir = __dirname;
+  const currentFile = fileURLToPath(import.meta.url);
+  let dir = path.dirname(currentFile);
   while (dir !== path.parse(dir).root) {
     if (fs.existsSync(path.join(dir, "package.json"))) {
       return dir;
