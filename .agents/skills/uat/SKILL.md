@@ -124,18 +124,15 @@ Format:
 ```markdown
 ## UAT Report
 
-**Scope:** [1-2 sentences describing what was tested based on the diff and PR description]
-
-**Status:** [Pass / Fail / Partial]
+[Short summary of the PR change, 2–3 sentences max]
 
 ### Tested Flow
-[Short step-by-step description of the generated test]
+- [Short, concise bullet points of the testing process]
+- [Each bullet should describe one meaningful step or assertion]
 
-### Evidence
-| Step | File |
-|------|------|
-| [description] | `[filename]` |
-| ... | ... |
+### Screenshots
+[For each screenshot captured during the test run, write:]
+- **[Descriptive title of what is being tested]** — [Outcome: what the screenshot shows, e.g. "Passed: the Clear button is visible next to the promo code input."]
 
 Videos, traces, and full screenshots are available in the workflow artifacts.
 [View workflow run](${runUrl})
