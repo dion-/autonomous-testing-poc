@@ -33,6 +33,12 @@ describe("App", () => {
     expect(screen.getByRole("checkbox", { name: /subscribe to newsletter/i })).toBeInTheDocument();
 
     await userEvent.click(screen.getByRole("button", { name: /next/i }));
+    expect(screen.getByLabelText("Card Number")).toBeInTheDocument();
+    await userEvent.type(screen.getByLabelText("Card Number"), "1234567890123456");
+    await userEvent.type(screen.getByLabelText("Expiry (MM/YY)"), "12/25");
+    await userEvent.type(screen.getByLabelText("CVV"), "123");
+    await userEvent.click(screen.getByRole("button", { name: /next/i }));
+
     expect(screen.getByText("Jane Doe")).toBeInTheDocument();
   });
 
@@ -97,6 +103,10 @@ describe("App", () => {
     await userEvent.type(screen.getByLabelText("Postal Code"), "12345");
     await userEvent.click(screen.getByRole("button", { name: /next/i }));
     await userEvent.click(screen.getByRole("button", { name: /next/i }));
+    await userEvent.type(screen.getByLabelText("Card Number"), "1234567890123456");
+    await userEvent.type(screen.getByLabelText("Expiry (MM/YY)"), "12/25");
+    await userEvent.type(screen.getByLabelText("CVV"), "123");
+    await userEvent.click(screen.getByRole("button", { name: /next/i }));
 
     // Click the first Place Order button (there are two on the review step)
     await userEvent.click(screen.getAllByRole("button", { name: /place order/i })[0]!);
@@ -120,6 +130,10 @@ describe("App", () => {
     await userEvent.type(screen.getByLabelText("State / Province / Region"), "CA");
     await userEvent.type(screen.getByLabelText("Postal Code"), "12345");
     await userEvent.click(screen.getByRole("button", { name: /next/i }));
+    await userEvent.click(screen.getByRole("button", { name: /next/i }));
+    await userEvent.type(screen.getByLabelText("Card Number"), "1234567890123456");
+    await userEvent.type(screen.getByLabelText("Expiry (MM/YY)"), "12/25");
+    await userEvent.type(screen.getByLabelText("CVV"), "123");
     await userEvent.click(screen.getByRole("button", { name: /next/i }));
 
     const editButtons = screen.getAllByRole("button", { name: /edit/i });

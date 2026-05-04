@@ -39,3 +39,16 @@ export function formatPhone(phone: string): string {
   if (!match) return "";
   return `(${match[1]}) ${match[2]}-${match[3]}`;
 }
+
+export function isValidCardNumber(value: string): boolean {
+  const digits = value.replaceAll(/\D/g, "");
+  return digits.length === 16;
+}
+
+export function isValidExpiry(value: string): boolean {
+  return /^\d{2}\/\d{2}$/.test(value);
+}
+
+export function isValidCvv(value: string): boolean {
+  return /^\d{3,4}$/.test(value);
+}

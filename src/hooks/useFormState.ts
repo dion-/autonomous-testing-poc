@@ -20,6 +20,11 @@ export interface FormData {
     deliveryInstructions: string;
     promoCode: string;
   };
+  payment: {
+    cardNumber: string;
+    expiry: string;
+    cvv: string;
+  };
 }
 
 const STORAGE_KEY = "checkout-draft";
@@ -43,6 +48,11 @@ const defaultFormData: FormData = {
     giftWrap: false,
     deliveryInstructions: "",
     promoCode: "",
+  },
+  payment: {
+    cardNumber: "",
+    expiry: "",
+    cvv: "",
   },
 };
 
@@ -106,6 +116,17 @@ export function useFormState() {
     [],
   );
 
+  const updatePayment = useCallback((field: keyof FormData["payment"], value: string) => {
+    setFormData((prev) => {
+      const next = {
+        ...prev,
+        payment: { ...prev.payment, [field]: value },
+      };
+      saveDraft(next);
+      return next;
+    });
+  }, []);
+
   const clearDraft = useCallback(() => {
     setFormData(defaultFormData);
     try {
@@ -120,6 +141,7 @@ export function useFormState() {
     updatePersonal,
     updateShipping,
     updatePreferences,
+    updatePayment,
     clearDraft,
   };
 }

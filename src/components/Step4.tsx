@@ -69,6 +69,11 @@ export function Step4({ data, onSubmit, onEdit }: Step4Props) {
           {data.preferences.promoCode && <p>Promo: {data.preferences.promoCode}</p>}
         </ReviewSection>
 
+        <ReviewSection title="Payment" onEdit={() => onEdit(3)}>
+          <p>Card ending in {data.payment.cardNumber.slice(-4)}</p>
+          <p>Expires {data.payment.expiry}</p>
+        </ReviewSection>
+
         <div className="py-4">
           <h3 className="text-sm font-semibold text-gray-900 mb-3">Total</h3>
           <div className="space-y-2 text-sm">

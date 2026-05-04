@@ -8,7 +8,7 @@ describe("Navigation", () => {
     render(
       <Navigation
         currentStep={0}
-        totalSteps={4}
+        totalSteps={5}
         onNext={vi.fn()}
         onBack={vi.fn()}
         onSkipTo={vi.fn()}
@@ -18,14 +18,14 @@ describe("Navigation", () => {
     expect(screen.getByRole("navigation")).toBeInTheDocument();
     expect(screen.getByRole("list")).toBeInTheDocument();
     const buttons = screen.getAllByRole("button");
-    expect(buttons.length).toBe(4);
+    expect(buttons.length).toBe(5);
   });
 
   it("marks the current step with aria-current", () => {
     render(
       <Navigation
         currentStep={1}
-        totalSteps={4}
+        totalSteps={5}
         onNext={vi.fn()}
         onBack={vi.fn()}
         onSkipTo={vi.fn()}
@@ -39,7 +39,7 @@ describe("Navigation", () => {
     render(
       <Navigation
         currentStep={2}
-        totalSteps={4}
+        totalSteps={5}
         onNext={vi.fn()}
         onBack={vi.fn()}
         onSkipTo={vi.fn()}
@@ -56,7 +56,7 @@ describe("Navigation", () => {
     render(
       <Navigation
         currentStep={0}
-        totalSteps={4}
+        totalSteps={5}
         onNext={vi.fn()}
         onBack={vi.fn()}
         onSkipTo={onSkipTo}

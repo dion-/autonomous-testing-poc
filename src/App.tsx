@@ -1,33 +1,27 @@
 import { useState } from "react";
 import { useFormState } from "./hooks/useFormState";
-import { Step1 } from "./components/Step1";
-import { Step2 } from "./components/Step2";
-import { Step3 } from "./components/Step3";
-import { Step4 } from "./components/Step4";
-import { Navigation } from "./components/Navigation";
-import { Modal } from "./components/Modal";
-import { Summary } from "./components/Summary";
-import { clampStep, getCanProceed, getNextStep, getPrevStep, TOTAL_STEPS } from "./utils/checkout";
+import { Modal, Navigation, Payment, Step1, Step2, Step3, Step4, Summary } from "./components";
+import * as checkout from "./utils/checkout";
 
 export default function App() {
   const [step, setStep] = useState(0);
   const [termsOpen, setTermsOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const { formData, updatePersonal, updateShipping, updatePreferences, clearDraft } =
+  const { formData, updatePersonal, updateShipping, updatePreferences, updatePayment, clearDraft } =
     useFormState();
 
-  const canProceed = getCanProceed(step, formData);
+  const canProceed = checkout.getCanProceed(step, formData);
 
   function handleNext() {
-    setStep((s) => getNextStep(s));
+    setStep((s) => checkout.getNextStep(s));
   }
 
   function handleBack() {
-    setStep((s) => getPrevStep(s));
+    setStep((s) => checkout.getPrevStep(s));
   }
 
   function handleSkipTo(target: number) {
-    setStep((s) => clampStep(target, s));
+    setStep((s) => checkout.clampStep(target, s));
   }
 
   function handleSubmit() {
@@ -81,7 +75,7 @@ export default function App() {
           {/* Sidebar Navigation */}
           <Navigation
             currentStep={step}
-            totalSteps={TOTAL_STEPS}
+            totalSteps={checkout.TOTAL_STEPS}
             onNext={handleNext}
             onBack={handleBack}
             onSkipTo={handleSkipTo}
@@ -105,7 +99,8 @@ export default function App() {
                   {step === 0 && <Step1 data={formData.personal} onChange={updatePersonal} />}
                   {step === 1 && <Step2 data={formData.shipping} onChange={updateShipping} />}
                   {step === 2 && <Step3 data={formData.preferences} onChange={updatePreferences} />}
-                  {step === 3 && (
+                  {step === 3 && <Payment data={formData.payment} onChange={updatePayment} />}
+                  {step === 4 && (
                     <Step4 data={formData} onSubmit={handleSubmit} onEdit={handleEdit} />
                   )}
                 </form>
@@ -143,7 +138,7 @@ export default function App() {
                     Back
                   </button>
                 )}
-                {step < TOTAL_STEPS - 1 ? (
+                {step < checkout.TOTAL_STEPS - 1 ? (
                   <button
                     type="button"
                     onClick={handleNext}

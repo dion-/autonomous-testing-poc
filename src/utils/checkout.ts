@@ -1,7 +1,15 @@
 import type { FormData } from "../hooks/useFormState";
-import { isNonEmpty, isValidEmail, isValidPhone, isValidPostalCode } from "./validators";
+import {
+  isNonEmpty,
+  isValidCardNumber,
+  isValidCvv,
+  isValidEmail,
+  isValidExpiry,
+  isValidPhone,
+  isValidPostalCode,
+} from "./validators";
 
-export const TOTAL_STEPS = 4;
+export const TOTAL_STEPS = 5;
 
 export function getCanProceed(step: number, formData: FormData): boolean {
   switch (step) {
@@ -23,6 +31,12 @@ export function getCanProceed(step: number, formData: FormData): boolean {
     case 2:
       return true;
     case 3:
+      return (
+        isValidCardNumber(formData.payment.cardNumber) &&
+        isValidExpiry(formData.payment.expiry) &&
+        isValidCvv(formData.payment.cvv)
+      );
+    case 4:
       return true;
     default:
       return false;
