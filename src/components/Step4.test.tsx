@@ -8,6 +8,7 @@ const baseData: FormData = {
   personal: { firstName: "Jane", lastName: "Doe", email: "jane@example.com", phone: "+1234567890" },
   shipping: { country: "US", address: "123 Main", city: "SF", state: "CA", postalCode: "12345" },
   preferences: { newsletter: false, giftWrap: false, deliveryInstructions: "", promoCode: "" },
+  payment: { cardNumber: "1234567890123456", expiry: "12/25", cvv: "123" },
 };
 
 describe("Step4", () => {
@@ -31,6 +32,8 @@ describe("Step4", () => {
     expect(onEdit).toHaveBeenCalledWith(1);
     await userEvent.click(editButtons[2]!);
     expect(onEdit).toHaveBeenCalledWith(2);
+    await userEvent.click(editButtons[3]!);
+    expect(onEdit).toHaveBeenCalledWith(3);
   });
 
   it("calls onSubmit when clicking place order", async () => {
