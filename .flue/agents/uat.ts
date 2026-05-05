@@ -58,17 +58,17 @@ export default async function ({ init }: FlueContext) {
 
   const agent = await init({
     sandbox: "local",
-    model: "openai/gpt-4.1",
+    model: "openai/gpt-5.1",
   });
   const session = await agent.session();
 
   // Ensure preview server is running (workflow usually starts it, but handle local runs too)
   const { exitCode: waitExit } = await session.shell(
-    "npx wait-on http://localhost:4173 -t 5000 2>/dev/null || true"
+    "npx wait-on http://localhost:4173 -t 5000 2>/dev/null || true",
   );
   if (waitExit !== 0) {
     await session.shell(
-      "pnpm exec vite preview --port 4173 --host & npx wait-on http://localhost:4173"
+      "pnpm exec vite preview --port 4173 --host & npx wait-on http://localhost:4173",
     );
   }
 
@@ -86,7 +86,7 @@ export default async function ({ init }: FlueContext) {
   } catch {
     const baseRef = pr.baseRef || "main";
     const { stdout } = await session.shell(
-      `git diff origin/${baseRef}...HEAD -- src/ 2>/dev/null || git diff HEAD~1 -- src/ || echo ""`
+      `git diff origin/${baseRef}...HEAD -- src/ 2>/dev/null || git diff HEAD~1 -- src/ || echo ""`,
     );
     diff = stdout;
   }
@@ -111,7 +111,7 @@ export default async function ({ init }: FlueContext) {
 
   // Read skill result
   const { stdout: resultJson } = await session.shell(
-    "cat flue-result.json 2>/dev/null || echo '{}'"
+    "cat flue-result.json 2>/dev/null || echo '{}'",
   );
   const result = JSON.parse(resultJson || "{}");
 
