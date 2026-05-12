@@ -43,4 +43,15 @@ describe("Step1", () => {
     );
     expect(screen.queryByText(/please enter a valid/i)).not.toBeInTheDocument();
   });
+
+  it("shows a green checkmark for valid fields", () => {
+    render(
+      <Step1
+        data={{ firstName: "Jane", lastName: "Doe", email: "jane@example.com", phone: "+1234567890" }}
+        onChange={vi.fn()}
+      />,
+    );
+
+    expect(screen.getAllByTestId("valid-indicator")).toHaveLength(4);
+  });
 });
